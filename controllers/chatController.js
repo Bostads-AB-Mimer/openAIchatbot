@@ -3,6 +3,7 @@ const axios = require('axios');
 const chatHistories = {};
 
 async function callOpenAI(messages) {
+  const apiKey = process.env.OPENAI_API_KEY;
   const openaiResponse = await axios.post(
     'https://api.openai.com/v1/chat/completions',
     {
@@ -12,9 +13,7 @@ async function callOpenAI(messages) {
     {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${
-          process.env.OPENAI_API_KEY || 'your-default-api-key'
-        }`,
+        'Authorization': `Bearer ${apiKey}`,
       },
     }
   );
@@ -43,6 +42,7 @@ exports.chat = async (req, res) => {
       role: 'user',
       content: message,
     });
+
 
     const openAIResponse = await callOpenAI(chatHistories[userId]);
 
@@ -77,7 +77,7 @@ exports.chatHistory = (req, res) => {
       .send({ error: 'Chat history not found for the provided userId.' });
   }
 
-  res.status(200).send(chatHistories[userId]);
+  res.status(200).send({ history: chatHistories[userId] });
 };
 
 exports.clearChatHistory = (req, res) => {
@@ -96,3 +96,27 @@ exports.clearChatHistory = (req, res) => {
   delete chatHistories[userId];
   res.status(200).send({ message: 'Chat history cleared successfully.' });
 };
+
+exports.setSystemMessage = (req, res) => {
+  const { userId, message } = req.body;
+
+  if (!userId) {
+    return res.status(400).send({ error: 'A userId is required.' });
+  }
+
+  if (!message) {
+    return res.status(400).send({ error: 'A message is required.' });
+  }
+
+  if (!chatHistories[userId]) {
+    chatHistories[userId] = [];
+  }
+
+  chatHistories[userId].push({
+    role: 'system',
+    content: message,
+  });
+
+  res.status(200).send({ message: 'System message set successfully.' });
+};
+
