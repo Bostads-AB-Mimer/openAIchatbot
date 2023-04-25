@@ -23,6 +23,20 @@ The API provides several endpoints to interact with the chatbot, manage chat his
 
 ## API Endpoints
 
+┌────────────────┐
+│ │
+│ Chatbot │
+│ │
+└────────────────┘
+│
+├─────> POST /chat
+│
+├─────> GET /chatHistory
+│
+├─────> POST /clearChatHistory
+│
+└─────> POST /setSystemMessage
+
 - `/chat`: Send a message to the chatbot and receive a response. (POST)
 - `/chatHistory`: Retrieve the chat history for a specific user. (GET)
 - `/clearChatHistory`: Clear the chat history for a specific user. (POST)
