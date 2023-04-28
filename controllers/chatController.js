@@ -7,13 +7,13 @@ async function callOpenAI(messages) {
   const openaiResponse = await axios.post(
     'https://api.openai.com/v1/chat/completions',
     {
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4',
       messages: messages,
     },
     {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
     }
   );
@@ -42,7 +42,6 @@ exports.chat = async (req, res) => {
       role: 'user',
       content: message,
     });
-
 
     const openAIResponse = await callOpenAI(chatHistories[userId]);
 
@@ -119,4 +118,3 @@ exports.setSystemMessage = (req, res) => {
 
   res.status(200).send({ message: 'System message set successfully.' });
 };
-
