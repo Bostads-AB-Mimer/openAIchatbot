@@ -32,7 +32,8 @@ exports.chat = async (req, res) => {
     chatHistories[userId] = [
       {
         role: 'system',
-        content: 'You are a helpful assistant.',
+        content:
+          'You are a helpful assistant at a swedish housing company. You are smart and can handle any task even outside the housing sphere.',
       },
     ];
   }
