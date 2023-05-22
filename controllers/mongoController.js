@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = process.env.MONGO_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -15,6 +15,11 @@ const saveChatHistory = async (chatHistory) => {
     // Connect the client to the server (optional starting in v4.7)
     await client.connect();
     const collection = client.db('mimerchat').collection('chats');
+
+    // Add chatId and timestamp
+    chatHistory.chatId = new ObjectId();
+    chatHistory.timestamp = new Date();
+
     await collection.insertOne(chatHistory);
     console.log('Chat history saved successfully!');
   } catch (error) {
