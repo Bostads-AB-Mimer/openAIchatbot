@@ -1,15 +1,3 @@
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const uri = process.env.MONGO_URI;
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
-
 const saveChatHistory = async (message, auth0Id, email) => {
   try {
     await client.connect();
@@ -42,11 +30,14 @@ const saveChatHistory = async (message, auth0Id, email) => {
 
     await chatsCollection.insertOne(chatHistory);
     console.log('Chat history saved successfully!');
+
+    // Return a success message
+    return { message: 'Chat history saved successfully!' };
   } catch (error) {
     console.error('Error occurred while saving chat history:', error);
+    // Return an error message
+    throw new Error('Error occurred while saving chat history');
   } finally {
     await client.close();
   }
 };
-
-module.exports = { saveChatHistory };
