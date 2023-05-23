@@ -19,7 +19,12 @@ const connectDb = async () => {
   }
 };
 
-const saveChatHistory = async (message, auth0Id, email) => {
+const saveChatHistory = async (
+  message,
+  auth0Id,
+  email,
+  chatName = 'Unnamed'
+) => {
   try {
     await connectDb();
 
@@ -41,12 +46,13 @@ const saveChatHistory = async (message, auth0Id, email) => {
       user = newUser;
     }
 
-    // Add userId, chatId and timestamp to chat history
+    // Add userId, chatId, chatName and timestamp to chat history
     const chatHistory = {
       userId: user.userId,
       chatId: new ObjectId(),
       timestamp: new Date(),
       history: message.history,
+      chatName,
     };
 
     await chatsCollection.insertOne(chatHistory);

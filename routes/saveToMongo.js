@@ -4,11 +4,17 @@ const mongoController = require('../controllers/mongoController');
 
 router.post('/', async (req, res) => {
   try {
-    const { auth0Id, email, message } = req.body.chatHistory;
+    const {
+      auth0Id,
+      email,
+      message,
+      chatName = 'Unnamed',
+    } = req.body.chatHistory;
     const result = await mongoController.saveChatHistory(
       message,
       auth0Id,
-      email
+      email,
+      chatName
     );
     res.status(200).json(result);
   } catch (error) {
@@ -18,5 +24,4 @@ router.post('/', async (req, res) => {
       .json({ message: 'Error occurred while saving chat history' });
   }
 });
-
 module.exports = router;
