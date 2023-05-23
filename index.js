@@ -11,6 +11,7 @@ const chatHistoryRoutes = require('./routes/chatHistory');
 const clearChatHistoryRoutes = require('./routes/clearChatHistory');
 const setSystemMessageRoutes = require('./routes/setSystemMessage');
 const saveToMongoRoutes = require('./routes/saveToMongo');
+const chatHistoryMongoDbRoutes = require('./routes/chatHistoryMongoDb'); // import new router
 
 app.use(express.json());
 
@@ -28,6 +29,7 @@ app.use('/chatHistory', checkApiKey, chatHistoryRoutes);
 app.use('/clearChatHistory', checkApiKey, clearChatHistoryRoutes);
 app.use('/setSystemMessage', checkApiKey, setSystemMessageRoutes);
 app.use('/saveToMongo', checkApiKey, saveToMongoRoutes);
+app.use('/chatHistoryMongoDb', checkApiKey, chatHistoryMongoDbRoutes); // Add new router to the app
 
 app.listen(port, () => {
   console.log(`Server is running`);

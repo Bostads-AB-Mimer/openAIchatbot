@@ -10,9 +10,18 @@ const client = new MongoClient(uri, {
   },
 });
 
-const saveChatHistory = async (message, auth0Id, email) => {
+const connectDb = async () => {
   try {
     await client.connect();
+  } catch (error) {
+    console.error('Error connecting to database:', error);
+    throw new Error('Error connecting to database');
+  }
+};
+
+const saveChatHistory = async (message, auth0Id, email) => {
+  try {
+    await connectDb();
 
     const usersCollection = client.db('mimerchat').collection('users');
     const chatsCollection = client.db('mimerchat').collection('chats');
@@ -49,9 +58,35 @@ const saveChatHistory = async (message, auth0Id, email) => {
     console.error('Error occurred while saving chat history:', error);
     // Return an error message
     throw new Error('Error occurred while saving chat history');
-  } finally {
-    await client.close();
   }
 };
 
-module.exports = { saveChatHistory };
+const getChatHistory = async (auth0Id) => {
+  try {
+    await connectDb();
+
+    const usersCollection = client.db('mimerchat').collection('users');
+    const chatsCollection = client.db('mimerchat').collection('chats');
+
+    // Find the user with the given auth0Id
+    const user = await usersCollection.findOne({ auth0Id });
+
+    if (!user) {
+      console.log('User not found!');
+      return { message: 'User not found!' };
+    }
+
+    // Fetch all chats that belong to the user
+    const chats = await chatsCollection.find({ userId: user.userId }).toArray();
+
+    console.log('Chat history fetched successfully!');
+
+    // Return the fetched chat history
+    return { message: 'Chat history fetched successfully!', chats };
+  } catch (error) {
+    console.error('Error occurred while fetching chat history:', error);
+    throw new Error('Error occurred while fetching chat history');
+  }
+};
+
+module.exports = { saveChatHistory, getChatHistory };
