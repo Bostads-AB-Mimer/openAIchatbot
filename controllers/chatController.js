@@ -7,8 +7,9 @@ async function callOpenAI(messages) {
   const openaiResponse = await axios.post(
     'https://api.openai.com/v1/chat/completions',
     {
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4-0613', // updated model version
       messages: messages,
+      function_call: 'none', // explicitly setting function call to none
     },
     {
       headers: {
@@ -46,9 +47,20 @@ exports.chat = async (req, res) => {
 
     const openAIResponse = await callOpenAI(chatHistories[userId]);
 
-    if (openAIResponse.status === 200) {
+    // Handling function call response
+    const responseMessage = openAIResponse.data.choices[0].message;
+    if (responseMessage.function_call) {
+      // Re-call OpenAI to get a user-facing message if it's a function call
+      const retryResponse = await callOpenAI(chatHistories[userId]);
       const assistantMessage =
-        openAIResponse.data.choices[0].message.content.trim();
+        retryResponse.data.choices[0].message.content.trim();
+      chatHistories[userId].push({
+        role: 'assistant',
+        content: assistantMessage,
+      });
+      res.status(200).send({ message: assistantMessage });
+    } else if (openAIResponse.status === 200) {
+      const assistantMessage = responseMessage.content.trim();
       chatHistories[userId].push({
         role: 'assistant',
         content: assistantMessage,
