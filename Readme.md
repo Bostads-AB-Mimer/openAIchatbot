@@ -1,6 +1,6 @@
 # Mimers openAI API
 
-Mimers openAI API is a simple API built using Node.js and Express that serves as a wrapper for the OpenAI GPT-3.5 Turbo model. Users can interact with the chatbot via the API, and it includes the ability to manage chat history and set system messages.
+Mimers openAI API is a simple API built using Node.js and Express that serves as a wrapper for the OpenAI GPT-3.5 and GPT 4 models. Users can interact with the chatbot via the API, and it includes the ability to manage chat history and set system messages.
 
 ## Table of Contents
 
